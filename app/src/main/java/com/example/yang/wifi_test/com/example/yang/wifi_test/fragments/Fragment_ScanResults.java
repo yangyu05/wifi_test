@@ -36,7 +36,7 @@ import java.util.List;
 public class Fragment_ScanResults extends Fragment {
 
     ListView list;
-    List<ScanResult> scanResults = new ArrayList<ScanResult>();
+    List<ScanResult> scanResults = new ArrayList<>();
     WifiManager wifiManager = null;
     ScanResultsAdapter scanResultsAdapter;
     ScanResult to_connect;
@@ -164,7 +164,7 @@ public class Fragment_ScanResults extends Fragment {
                 } else {
                     wifiManager.disconnect();
                     wifiManager.enableNetwork(networkId, true);
-                    if (wifiManager.reconnect() == false) {
+                    if (!wifiManager.reconnect()) {
                         Toast.makeText(getActivity(), "Failed to connect " + to_connect.SSID, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getActivity(), "Connecting to " + to_connect.SSID, Toast.LENGTH_SHORT).show();
@@ -175,7 +175,7 @@ public class Fragment_ScanResults extends Fragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Fragment_ScanResults.PASSWORD_ACTIVITY) {
+        if (requestCode == PASSWORD_ACTIVITY) {
             if (resultCode == Activity.RESULT_OK) {
                 String password = data.getStringExtra("PASSWORD");
 
@@ -187,7 +187,7 @@ public class Fragment_ScanResults extends Fragment {
                 wifiManager.saveConfiguration();
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(netId, true);
-                if (wifiManager.reconnect() == false) {
+                if (!wifiManager.reconnect()) {
                     Toast.makeText(getActivity(), "Failed to connect " + to_connect.SSID, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), "Connecting to " + to_connect.SSID, Toast.LENGTH_SHORT).show();
@@ -200,7 +200,7 @@ public class Fragment_ScanResults extends Fragment {
         int security = SECURITY_OPEN;
         if (result.capabilities.contains("WEP")) {
             security |= SECURITY_WEP;
-        };
+        }
         if (result.capabilities.contains("WPA-PSK")) {
             security |= SECURITY_WPA | SECURITY_PSK;
         }

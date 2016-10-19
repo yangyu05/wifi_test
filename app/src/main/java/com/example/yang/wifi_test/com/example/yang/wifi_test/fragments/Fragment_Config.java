@@ -1,6 +1,8 @@
 package com.example.yang.wifi_test.com.example.yang.wifi_test.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
@@ -20,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.yang.wifi_test.ActivityModifyConfig;
+import com.example.yang.wifi_test.ActivityPassword;
 import com.example.yang.wifi_test.MainActivity;
 import com.example.yang.wifi_test.R;
 
@@ -37,6 +41,14 @@ public class Fragment_Config extends Fragment {
     WifiManager wifiManager;
     ConfigAdapter configAdapter;
 
+    public static final int MODIFY_CONFIG_ACTIVITY = 2;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateListView();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,7 +59,7 @@ public class Fragment_Config extends Fragment {
         wifiManager = (WifiManager)getActivity().getSystemService(MainActivity.WIFI_SERVICE);
         wifiConfiguration = wifiManager.getConfiguredNetworks();
         if (wifiConfiguration == null) {
-            wifiConfiguration = new ArrayList<WifiConfiguration>();
+            wifiConfiguration = new ArrayList<>();
         }
 
         configAdapter = new ConfigAdapter(getActivity());
@@ -64,6 +76,8 @@ public class Fragment_Config extends Fragment {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
             menu.setHeaderTitle(wifiConfiguration.get(info.position).SSID);
             menu.add(Menu.NONE, 0, 0, "Delete");
+            menu.add(Menu.NONE, 1, 0, "Modify");
+            menu.add(Menu.NONE, 2, 0, "Refresh list");
         }
     }
 
@@ -72,12 +86,29 @@ public class Fragment_Config extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
         if (menuItemIndex == 0) {
+            // delete
             wifiManager.removeNetwork(wifiConfiguration.get(info.position).networkId);
             wifiManager.saveConfiguration();
+            updateListView();
+        } else if (menuItemIndex == 1) {
+            // modify
+            Intent intent = new Intent(getActivity(), ActivityModifyConfig.class);
+            intent.putExtra("CONFIG", wifiConfiguration.get(info.position));
+            startActivityForResult(intent, MODIFY_CONFIG_ACTIVITY);
+        } else {
+            // refresh list
             updateListView();
         }
 
         return true;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MODIFY_CONFIG_ACTIVITY) {
+            if (resultCode == Activity.RESULT_OK) {
+                updateListView();
+            }
+        }
     }
 
     public void updateListView() {

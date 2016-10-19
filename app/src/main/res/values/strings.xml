@@ -1,4 +1,22 @@
 <resources>
     <string name="app_name">Wifi_test</string>
     <string name="title_activity_1">Activity1</string>
+    <string name="security_type">Security Type</string>
+    <string name="password">Password</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="on">on</string>
+    <string name="off">Off</string>
+    <string name="wi_fi">Wi-Fi</string>
+    <string name="not_connected">Not connected</string>
+
+    <string-array name="security_array">
+        <item>OPEN</item>
+        <item>WEP</item>
+        <item>WPA-PSK</item>
+        <item>WPA2-PSK</item>
+        <item>WPA/WPA2-PSK</item>
+        <item>WPA/WPA2-EAP</item>
+        <item>Unknown</item>
+    </string-array>
 </resources>
